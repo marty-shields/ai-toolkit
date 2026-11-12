@@ -22,7 +22,7 @@ Each review runs once. If it finds something, one fix pass runs and the builder 
 | `skills/build/SKILL.md` | The builder: discovers the repo, runs the stages, holds the question list | your session |
 | `skills/build/report-format.md` | The short report every agent returns | n/a |
 | `agents/implementer.md` | Code and tests; also applies review fixes | sonnet |
-| `agents/verifier.md` | Build, tests, then the repo's strategy: api, web, emulator, cli or library | sonnet |
+| `agents/verifier.md` | Build, tests, then the repo's strategy: api, web, emulator, cli or library; builds missing states in a throwaway copy | sonnet |
 | `agents/review-quality.md` | Code quality, via `/code-review` and the repo's rules | opus |
 | `agents/review-tests.md` | Test quality, with a mutation check in a throwaway worktree | opus |
 | `agents/review-requirements.md` | Each requirement traced to code and to a test that asserts it | opus |
