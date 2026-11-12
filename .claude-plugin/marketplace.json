@@ -1,0 +1,14 @@
+{
+  "name": "ai-toolkit",
+  "owner": {
+    "name": "Martin Shields"
+  },
+  "description": "Martin's Claude Code plugins and tools.",
+  "plugins": [
+    {
+      "name": "factory",
+      "source": "./plugins/factory",
+      "description": "A small plan-to-pull-request pipeline: implement with tests, verify, review code, tests, requirements and security, re-verify, and open a PR with a question list. Works in any repo by reading its own docs and CI."
+    }
+  ]
+}
