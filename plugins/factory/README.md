@@ -1,6 +1,6 @@
 # factory
 
-A small pipeline that turns a plan file into a pull request. You plan with Claude until the plan is good, run `/factory:build <plan-file>`, and come back to a PR with a list of questions on it.
+A small pipeline that turns a plan file into a pull request. You plan with Claude until the plan is good, run `/factory:build <plan-file>`, and come back to a PR with its open items in the description and a round of questions waiting for you.
 
 ## Use it in a repo
 1. Install the plugin: `/plugin marketplace add marty-shields/ai-toolkit`, then `/plugin install factory@ai-toolkit`.
@@ -12,9 +12,9 @@ No setup file is needed in the repo. The builder reads the repo's own guidance f
 The builder never merges.
 
 ## Flow
-Preflight (discover the repo, worktree off the default branch) → implement → verify → review 1 (code quality and test quality in parallel) → review 2 (requirements) → review 3 (security) → final verify → PR.
+Preflight (discover the repo, worktree off the default branch) → implement → verify → review 1 (code quality and test quality in parallel) → review 2 (requirements) → review 3 (security) → final verify → PR → question round.
 
-Each review runs once. If it finds something, one fix pass runs and the builder moves on. Anything still open goes on the question list, which is posted as a PR comment. A feature gets code and tests together; a change or bug fix gets a failing test first.
+Each review runs once. If it finds something, one fix pass runs and the builder moves on. Anything still open goes on the question list, which goes in the PR description under "Open items". When the PR is open, the builder asks you every open item (decisions, assumptions and nits) one question at a time (`AskUserQuestion`), then ticks them off and records your answers in the description. In a headless run the items simply stay unchecked. A feature gets code and tests together; a change or bug fix gets a failing test first.
 
 ## Parts
 | File | Job | Model |
@@ -27,7 +27,7 @@ Each review runs once. If it finds something, one fix pass runs and the builder 
 | `agents/review-tests.md` | Test quality, with a mutation check in a throwaway worktree | opus |
 | `agents/review-requirements.md` | Each requirement traced to code and to a test that asserts it | opus |
 | `agents/review-security.md` | Security, via `/security-review` | opus |
-| `agents/pr-opener.md` | Push, open the PR, post the questions | sonnet |
+| `agents/pr-opener.md` | Push, open the PR, write the open items into its description | sonnet |
 
 ## Guarantees
 - **No silent skips.** A review counts as run only when its report says which skill or checks ran. If one fails to run, the builder fixes the cause and re-runs it once; if it still fails, the PR says "REVIEW DID NOT RUN".
