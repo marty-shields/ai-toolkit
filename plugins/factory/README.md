@@ -11,6 +11,9 @@ No setup file is needed in the repo. The builder reads the repo's own guidance f
 
 The builder never merges.
 
+## Running from a subagent or epic runner
+`/factory:build` can also be started by a subagent through the Skill tool, for example one per item of an epic. Requirements: the subagent must run in the foreground. Background subagents don't get the `Agent` tool, which the builder needs to start its stage agents. A subagent spawned from your main conversation defaults to background, so ask for foreground explicitly when you spawn it (for example "run this in the foreground"). The subagent depth limit allows two more layers below it (default 3 is fine; see `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Subagents cannot ask questions, so the question round is skipped: open items stay unchecked in the PR description and are returned in the final message.
+
 ## Flow
 Preflight (discover the repo, worktree off the default branch) → implement → verify → review 1 (code quality and test quality in parallel) → review 2 (requirements) → review 3 (security) → final verify → PR → question round.
 
