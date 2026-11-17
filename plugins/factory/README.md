@@ -14,6 +14,9 @@ The builder never merges.
 ## Running from a subagent or epic runner
 `/factory:build` can also be started by a subagent through the Skill tool, for example one per item of an epic. Requirements: the subagent must run in the foreground. Background subagents don't get the `Agent` tool, which the builder needs to start its stage agents. A subagent spawned from your main conversation defaults to background, so ask for foreground explicitly when you spawn it (for example "run this in the foreground"). The subagent depth limit allows two more layers below it (default 3 is fine; see `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Subagents cannot ask questions, so the question round is skipped: open items stay unchecked in the PR description and are returned in the final message.
 
+## Running a whole epic
+`/factory:epic <epic-issue>` runs an epic as a series of builds on one epic branch: a plan per sub-issue, one `factory:build` agent per task, an acceptance comment and a squash-merge of each task PR into the epic branch, and cleanup of the worktree, branches, processes and every helper agent. Open questions are kept in the epic PR and asked in rounds at the end, with answers written back. It marks the epic PR ready and reports, and never merges it.
+
 ## Flow
 Preflight (discover the repo, worktree off the default branch) → implement → verify → review 1 (code quality and test quality in parallel) → review 2 (requirements) → review 3 (security) → final verify → PR → question round.
 
