@@ -36,7 +36,7 @@ This plugin's agents are `factory:implementer`, `factory:verifier`, `factory:rev
    - **Discover the repo facts, once,** from the new worktree (it holds the default branch's docs). Read the repo's guidance files (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, README), its build files (solution or project files, `package.json`, `pom.xml`, `pyproject.toml`, `Makefile`, `go.mod`), the CI workflows (what runs on a pull request) and any PR template. Take commands from what CI actually runs. Write a block of at most 25 lines, kept in your context and pasted into every brief, with:
      - **Default branch** and **project type** (api, web, mobile, cli or library).
      - **Commands:** build, unit tests, run named tests (with a `<name>` placeholder), format check, and **final checks** (lint, docs and type checks that CI runs).
-     - **Verification:** the strategy (api, web, emulator, cli or library), how to run the app, how to take screenshots or call the API, anything slow, and when it cannot run.
+     - **Verification:** the strategy (api, web, emulator, cli or library), how to run the app, how to take screenshots or call the API, which parts are **slow** (for example emulator or device E2E, full browser E2E suites) and so run only at the final verify, any cap on scenarios per run, and when it cannot run.
      - **Gates:** paths or kinds of change the guidance says need approval (for example migrations, CI config, a coverage baseline).
      - **Quality rules, test rules, security focus:** the rules the guidance files state, quoted briefly with their source.
      - **Pull requests:** branch names, commit and PR title format, labels, draft or ready default, how screenshots are published, and follow-ups a change needs (for example regenerating published screenshots).
@@ -45,11 +45,11 @@ This plugin's agents are `factory:implementer`, `factory:verifier`, `factory:rev
 
 2. **Implement.** Run `factory:implementer` with the plan path and the plan type. Then commit in the worktree using the repo's commit message format. Add the Co-Authored-By trailer from your instructions if you have one.
 
-3. **Verify.** Run `factory:verifier`. Pass it a scratchpad subfolder for screenshots. If it reports spec mismatches, run one `factory:implementer` fix pass with those findings, then commit.
+3. **Verify.** Run `factory:verifier`. Tell it this is the first verify: it runs the build, the unit and component tests and the fast parts of the strategy (for example story or page screenshots, API calls, CLI runs), and skips the slow parts the repo facts name, such as emulator or device E2E and full browser E2E suites, reporting them under EVIDENCE as "deferred to final verify" (not a pass and not a question). Pass it a scratchpad subfolder for screenshots. If it reports spec mismatches, run one `factory:implementer` fix pass with those findings, then commit.
 
 4. **Review 1: code and test quality.** First make the session's working directory the worktree: run `cd <worktree>` in a Bash call (in a subagent this does not persist, so go straight to `EnterWorktree` with `path`). When the worktree is inside the folder you were started in (a bare-repo layout), the `cd` carries over to later calls and to the agents you start. Check with `pwd`; if it does not show the worktree (you were started in one worktree and the new one is a sibling outside it), use the `EnterWorktree` tool with `path` instead; if that is refused too, carry on and the reviewers use their nested-session fallback. The reason: the review skills inspect the branch of their working directory, and a `cd` inside an agent's Bash call does not carry over. Only the reviews need this. A session moved with `EnterWorktree` is worktree-isolated and also refuses commands whose text contains `git` (for example paths under `.github/`) and the repo's own scripts may live there, so stay out of it for implement, verify, final verify and the PR. Then run `factory:review-quality` and `factory:review-tests` **in one message, in parallel**. Merge their findings. If there are any, run one `factory:implementer` fix pass and commit.
 
-5. **Review 2: requirements.** Run `factory:review-requirements`, and give it the verifier's results from stage 3 in its brief. If it has findings, run one fix pass and commit.
+5. **Review 2: requirements.** Run `factory:review-requirements`, and give it the verifier's results from stage 3 in its brief (slow checks there are deferred to the final verify, not missing). If it has findings, run one fix pass and commit.
 
 6. **Review 3: security.** Run `factory:review-security`. If it has findings, run one fix pass and commit.
 
@@ -57,7 +57,7 @@ This plugin's agents are `factory:implementer`, `factory:verifier`, `factory:rev
 
    Each review runs once with at most one fix pass (a re-run only after a review failed to run, see above). Never re-run a review to look for more. Findings the fix pass left unresolved go on the question list as nits.
 
-7. **Final verify.** Run `factory:verifier` again. Tell it this is the final verify, so it also runs the repo facts' final checks. If anything fails, run one fix pass, commit and re-run the verifier once. If it is still red, stop (see above).
+7. **Final verify.** Run `factory:verifier` again. Tell it this is the final verify, so it also runs the slow parts of the strategy deferred at stage 3 and the repo facts' final checks. It runs the slow strategy once, with the plan's scenarios combined into as few invocations as the repo's limits allow (each invocation may boot a fresh device). If anything fails, run one fix pass, commit and re-run the verifier once, telling it to re-run only the failing or affected slow scenarios. If it is still red, stop (see above). A slow check that could not run is not a pass: it goes on the question list as "could not verify".
 
 8. **PR.** Run `factory:pr-opener` with the plan summary, the screenshot paths from the verifier, the full question list, the commit identity, and whether to open a **draft** (only if the run notes or the repo's guidance say so; otherwise ready). It puts the question list in the PR description under `## Open items`; it does not post a comment. Nothing is merged.
 

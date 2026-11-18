@@ -18,7 +18,9 @@ The builder never merges.
 `/factory:epic <epic-issue>` runs an epic as a series of builds on one epic branch: a plan per sub-issue, one `factory:build` agent per task, an acceptance comment and a squash-merge of each task PR into the epic branch, and cleanup of the worktree, branches, processes and every helper agent. Open questions are kept in the epic PR and asked in rounds at the end, with answers written back. It marks the epic PR ready and reports, and never merges it.
 
 ## Flow
-Preflight (discover the repo, worktree off the default branch) → implement → verify → review 1 (code quality and test quality in parallel) → review 2 (requirements) → review 3 (security) → final verify → PR → question round.
+Preflight (discover the repo, worktree off the default branch) → implement → verify (build, tests and fast checks) → review 1 (code quality and test quality in parallel) → review 2 (requirements) → review 3 (security) → final verify (slow checks such as emulator or browser E2E, once, plus the final checks) → PR → question round.
+
+Slow verification runs only at the final verify: each emulator or device run can take minutes, so the first verify defers it and reports it as "deferred to final verify", never as a pass.
 
 Each review runs once. If it finds something, one fix pass runs and the builder moves on. Anything still open goes on the question list, which goes in the PR description under "Open items". When the PR is open, the builder asks you every open item (decisions, assumptions and nits) one question at a time (`AskUserQuestion`), then ticks them off and records your answers in the description. In a headless run the items simply stay unchecked. A feature gets code and tests together; a change or bug fix gets a failing test first.
 
@@ -28,7 +30,7 @@ Each review runs once. If it finds something, one fix pass runs and the builder 
 | `skills/build/SKILL.md` | The builder: discovers the repo, runs the stages, holds the question list | your session |
 | `skills/build/report-format.md` | The short report every agent returns | n/a |
 | `agents/implementer.md` | Code and tests; also applies review fixes | sonnet |
-| `agents/verifier.md` | Build, tests, then the repo's strategy: api, web, emulator, cli or library; builds missing states in a throwaway copy | sonnet |
+| `agents/verifier.md` | Build, tests, then the repo's strategy: api, web, emulator, cli or library (slow parts at the final verify only); builds missing states in a throwaway copy | sonnet |
 | `agents/review-quality.md` | Code quality, via `/code-review` and the repo's rules | opus |
 | `agents/review-tests.md` | Test quality, with a mutation check in a throwaway worktree | opus |
 | `agents/review-requirements.md` | Each requirement traced to code and to a test that asserts it | opus |
