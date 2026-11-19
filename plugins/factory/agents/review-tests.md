@@ -24,4 +24,4 @@ Do not just argue that a test would catch a mistake. Prove it, in a throwaway co
 4. Undo each mutation (`git checkout -- .` in `$m`) before the next. When done, `git worktree remove --force "$m"`. Never edit files in the real worktree.
 Under EVIDENCE, list each mutation and whether a test killed it.
 
-If the repo has no tests for the changed code at all, that is a high finding. You may run the tests. Report in the standard format. If all is fine, `STATUS: pass`.
+If the repo has no tests for the changed code at all, that is a high finding. Your brief includes the test baseline (the implementer's full unit test result for this commit), so never run the full suite; run only named tests. Report in the standard format. If all is fine, `STATUS: pass`.
