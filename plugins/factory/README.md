@@ -40,6 +40,7 @@ Each review runs once, and their findings go to one combined fix pass. Anything 
 | `agents/pr-opener.md` | Push, open the PR, write the open items into its description | sonnet |
 
 ## Guarantees
+- **No sleep polling.** The builder starts stage agents in the foreground, so each Agent call returns the report (it falls back to `sleep 60` waits only if an agent was forced into the background). Agents start long commands in the background and wait with one call that blocks up to 170 s until the command's exit line appears, instead of repeated fixed sleeps.
 - **E2E only at the final verify.** `hooks/hooks.json` runs `hooks/guard_slow_checks.py` before every Bash call. Inside a factory agent other than `factory:verifier` it denies commands that run E2E or emulator tools (an `*e2e*.sh` runner, `emulator`, `adb`, Playwright, Cypress, Maestro, Detox, or a test command aimed at an E2E project) and tells the agent why. It ignores every session and agent outside the factory, skips quoted text, heredocs and check or list commands, and lets the call through on any error. Plugin agents cannot carry their own hooks, so this is a plugin hook that reads `agent_type`.
 - **No silent skips.** A review counts as run only when its report says which skill or checks ran. If one fails to run, the builder fixes the cause and re-runs it once; if it still fails, the PR says "REVIEW DID NOT RUN".
 - **Commit identity.** Your git config, else the newest non-bot author on the default branch, noted in the question list. Git config is never changed.
