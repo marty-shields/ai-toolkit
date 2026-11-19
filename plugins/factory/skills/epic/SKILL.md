@@ -19,13 +19,13 @@ You are the orchestrator. You never write code. Each task runs as one subagent t
 ## Setup
 1. Read the epic issue and every sub-issue, and the repo's guidance files (AGENTS.md, CLAUDE.md, CONTRIBUTING.md) and CI workflows once. Note the commands, the gates and the environment workarounds the repo documents; pass them to each task's brief as run notes. Do not hard-code them here.
 2. Create the epic branch (`epic/<name>`) off the default branch and push it. Open a **draft** epic PR into the default branch. Its body has Summary, Status, Sub-issues (a checklist), and Open questions.
-3. For each sub-issue write a plan file (use `plan-template.md` from `factory:build`) in a scratchpad folder. Order the tasks by dependency; tasks that touch the same files run one after another, independent ones may run in parallel.
+3. For each sub-issue write a plan file (use `plan-template.md` from `factory:build`) in a scratchpad folder, filling in its "Seams and a test per requirement" table and its "Size" line. **Keep tasks small:** if a plan would change more than 5 production files (tests not counted), or both core logic and UI screens, split it into smaller tasks (for example the core change first, then the screens on top), each with its own plan and PR into the epic branch, and note the split in the epic PR's Sub-issues list. Order the tasks by dependency; tasks that touch the same files run one after another, independent ones may run in parallel.
 
 ## The task loop (one task at a time)
 1. Start a general-purpose subagent in the background with: "Invoke the Skill `factory:build` on <plan>", the epic branch as the PR base, the rules above, and the run note below about closing agents. Keep a list of every agent id you start.
 2. When it reports, read the PR and its CI yourself; do not trust the report alone. If CI is red, send the agent back with the failing log; do not merge red.
 3. When CI is green and every finding is fixed, post an **acceptance comment** on the task PR: CI result, each review's findings and fixes, what is unverified. Then squash-merge it into the epic branch.
-4. Update the epic PR body: tick the sub-issue, add a `### From <task> (#PR)` section with the task's open items, and note what is unverified. Close the sub-issue (a merge into a non-default branch does not close it).
+4. Update the epic PR body: tick the sub-issue, add a `### From <task> (#PR)` section with the task's open items (auto-resolved ones ticked, with their answer and source), and note what is unverified. Close the sub-issue (a merge into a non-default branch does not close it).
 5. **Clean up.** Remove the task's worktree and branches (local and remote). List the agents and stop every one for this task, stage helpers included, then list again to check none are left. Check for stray emulator, browser, stories-server and test processes and stop only ours.
 6. Next task.
 
@@ -39,7 +39,7 @@ You are the orchestrator. You never write code. Each task runs as one subagent t
 
 ## Open questions
 Do not ask the user anything mid-epic. Each task's open items live in the epic PR under its "From" section, and its own PR under `## Open items`. When the last task has merged:
-1. Collect every unanswered item. Ask them with `AskUserQuestion` in rounds, **decisions first**, up to 4 questions per call, each with 2-4 concrete options and your recommendation first marked "(Recommended)". Give each question enough context to stand alone.
+1. Collect every unanswered item. Auto-resolved items are already ticked; do not ask them again unless the user unticked one. Ask them with `AskUserQuestion` in rounds, **decisions first**, up to 4 questions per call, each with 2-4 concrete options and your recommendation first marked "(Recommended)". Give each question enough context to stand alone.
 2. Write the answers into the epic PR under "Owner answers" and tick the items.
 3. An answer that changes code becomes one follow-up task (one PR for several small ones is fine); run it through the same loop.
 4. If an answer is a request to change process or wording across the repo (for example a documentation pass), include it in the follow-up task.

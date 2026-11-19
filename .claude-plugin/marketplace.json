@@ -8,7 +8,7 @@
     {
       "name": "factory",
       "source": "./plugins/factory",
-      "description": "A small plan-to-pull-request pipeline: implement with tests, verify, review code, tests, requirements and security, re-verify, and open a PR with a question list. Works in any repo by reading its own docs and CI."
+      "description": "A small plan-to-pull-request pipeline: implement with tests, review code, tests, requirements and security in parallel, verify, settle open items a source answers, and open a PR with a question list. Works in any repo by reading its own docs and CI."
     }
   ]
 }
