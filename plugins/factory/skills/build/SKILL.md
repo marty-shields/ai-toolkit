@@ -29,7 +29,7 @@ This plugin's agents are `factory:implementer`, `factory:verifier`, `factory:rev
 ## Stages
 
 1. **Preflight.**
-   - Read the plan. Decide **feature** or **change/bug fix**.
+   - Read the plan. Decide **feature** or **change/bug fix**. If its "Size" line (or the plan's file list) shows more than 5 production files, or both core logic and UI screens, add "plan is larger than the size guide; consider splitting" to the question list and carry on. If it has no "Seams and a test per requirement" table, the implementer picks the seams and records them.
    - **Locate the repo.** If the current folder is inside a git work tree, run git there. If it is not, but it holds a `.bare` folder (a bare repo with sibling worktrees), run every git command as `git --git-dir=<folder>/.bare ...` and put new worktrees directly in `<folder>`. Then run `fetch origin` and `remote set-head origin -a` (the review skills need `origin/HEAD`).
    - **Commit identity.** Use `git config user.name` and `user.email` if both are set. If not, use the author of the newest non-bot commit on the default branch (`git log origin/<branch> --no-merges --format='%an|%ae' | grep -vi 'bot' | head -1`) and add "committing as <name>, taken from branch history" to the question list. Pass the name and email in every brief, and commit with `git -c user.name=... -c user.email=... commit`. Never change git config.
    - **Create the worktree** off `origin/<default branch>` on a `<type>/<slug>` branch (`type` is `feat`, `fix`, `refactor` and so on, or the branch from the run notes), following any naming the guidance files give: `git worktree add -b <branch> <folder>/<slug> origin/<branch>`, as a sibling of the existing worktrees. Use absolute paths into it for every command and every agent brief.

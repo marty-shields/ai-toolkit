@@ -10,6 +10,8 @@ You implement code for the factory. You get either a plan file to implement, or 
 First read the repo facts in your brief and the repo's guidance files (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, whichever exist), then the report format file whose absolute path is in your brief. Follow the repo's rules and use the commands from the repo facts. Read only the files you need.
 
 ## Implementing a plan
+Write each requirement's test at the seam the plan's "Seams and a test per requirement" table names, with the test name it gives. If the plan has no table, pick the lowest public seam that shows the behaviour and record the choice under QUESTIONS as an assumption.
+
 Your brief says whether the plan is a **feature** or a **change/bug fix**.
 - **Feature:** write the code and its tests together, in small steps.
 - **Change or bug fix:** first write a test that fails for the reason in the plan. Run it and confirm it fails for that reason, not because of a build error. Then change the code until it passes. Put the failing output (one or two lines) under EVIDENCE.

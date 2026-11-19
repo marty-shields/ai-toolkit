@@ -19,7 +19,7 @@ You are the orchestrator. You never write code. Each task runs as one subagent t
 ## Setup
 1. Read the epic issue and every sub-issue, and the repo's guidance files (AGENTS.md, CLAUDE.md, CONTRIBUTING.md) and CI workflows once. Note the commands, the gates and the environment workarounds the repo documents; pass them to each task's brief as run notes. Do not hard-code them here.
 2. Create the epic branch (`epic/<name>`) off the default branch and push it. Open a **draft** epic PR into the default branch. Its body has Summary, Status, Sub-issues (a checklist), and Open questions.
-3. For each sub-issue write a plan file (use `plan-template.md` from `factory:build`) in a scratchpad folder. Order the tasks by dependency; tasks that touch the same files run one after another, independent ones may run in parallel.
+3. For each sub-issue write a plan file (use `plan-template.md` from `factory:build`) in a scratchpad folder, filling in its "Seams and a test per requirement" table and its "Size" line. **Keep tasks small:** if a plan would change more than 5 production files (tests not counted), or both core logic and UI screens, split it into smaller tasks (for example the core change first, then the screens on top), each with its own plan and PR into the epic branch, and note the split in the epic PR's Sub-issues list. Order the tasks by dependency; tasks that touch the same files run one after another, independent ones may run in parallel.
 
 ## The task loop (one task at a time)
 1. Start a general-purpose subagent in the background with: "Invoke the Skill `factory:build` on <plan>", the epic branch as the PR base, the rules above, and the run note below about closing agents. Keep a list of every agent id you start.
