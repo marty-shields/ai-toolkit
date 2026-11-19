@@ -18,7 +18,7 @@ You are the orchestrator. You never write code. Each task runs as one subagent t
 
 ## Setup
 1. Read the epic issue and every sub-issue, and the repo's guidance files (AGENTS.md, CLAUDE.md, CONTRIBUTING.md) and CI workflows once. Note the commands, the gates and the environment workarounds the repo documents; pass them to each task's brief as run notes. Do not hard-code them here.
-2. Create the epic branch (`epic/<name>`) off the default branch and push it. Open a **draft** epic PR into the default branch. Its body has Summary, Status, Sub-issues (a checklist), and Open questions.
+2. Create the epic branch (`epic/<name>`) off the default branch and push it. If you need a worktree for it, put it under the repo root's `.claude/worktrees/` too. Open a **draft** epic PR into the default branch. Its body has Summary, Status, Sub-issues (a checklist), and Open questions.
 3. For each sub-issue write a plan file (use `plan-template.md` from `factory:build`) in a scratchpad folder, filling in its "Seams and a test per requirement" table and its "Size" line. **Keep tasks small:** if a plan would change more than 5 production files (tests not counted), or both core logic and UI screens, split it into smaller tasks (for example the core change first, then the screens on top), each with its own plan and PR into the epic branch, and note the split in the epic PR's Sub-issues list. Order the tasks by dependency; tasks that touch the same files run one after another, independent ones may run in parallel.
 
 ## The task loop (one task at a time)
@@ -30,6 +30,7 @@ You are the orchestrator. You never write code. Each task runs as one subagent t
 6. Next task.
 
 ## Run note to give every task agent
+"Create your worktree under the repo root's `.claude/worktrees/` (the folder that holds `.bare` in a bare-repo layout, otherwise the main work tree), so entering it for the reviews does not ask the user."
 "Close every agent you start: keep each stage agent's id, stop it once it has reported, and before your final report list agents and stop every one you started. If you are resumed after an interruption, list your agents first, stop leftovers, and re-run only the stage that did not report; never start a second copy of a stage that is still running."
 
 ## Interruptions and pauses
