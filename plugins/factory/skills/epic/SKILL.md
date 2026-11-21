@@ -30,7 +30,7 @@ You are the orchestrator. You never write code. Each task runs as one subagent t
 6. Next task.
 
 ## Run note to give every task agent
-"Create your worktree under the repo root's `.claude/worktrees/` (the folder that holds `.bare` in a bare-repo layout, otherwise the main work tree), so entering it for the reviews does not ask the user."
+"Create your worktree under the repo root's `.claude/worktrees/` (the folder that holds `.bare` in a bare-repo layout, otherwise the main work tree) with `git worktree add`. Move between folders only with Bash `cd` and absolute paths; never call the `EnterWorktree` or `ExitWorktree` tools, because they ask the user to approve each call."
 "Close every agent you start: keep each stage agent's id, stop it once it has reported, and before your final report list agents and stop every one you started. If you are resumed after an interruption, list your agents first, stop leftovers, and re-run only the stage that did not report; never start a second copy of a stage that is still running."
 
 ## Interruptions and pauses
